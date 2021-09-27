@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package kz.as.registry;
+
+
+service CityService {
+  rpc get (CityRequest) returns (CityResponse) {
+  }
+}
+
+message CityRequest {
+  int64 id = 1;
+}
+
+message CityResponse {
+  int64 id = 1;
+  int64 message = 2;
+  string title = 3;
+  string code = 4;
+}

@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: auth-api
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: postgres
+    username: postgres
+    url: jdbc:postgresql://postgres:5432/auth
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  flyway:
+    baseline-on-migrate: true
+grpc:
+  port: 7777
+  enable-reflection: true
+server:
+  port: 8081
+eureka:
+  instance:
+    prefer-ip-address: true # registers the service ip rather than the server name
+  client:
+    register-with-eureka: true # register him self at eureka
+    fetch-registry: true # pull down a local copy of the registries
+    service-url:
+      defaultZone: http://backend-eureka:8083/eureka # discovery service location
+jwt:
+  secret: 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTYyODI0NDA0NCwiaWF0IjoxNjI4MjQ0MDQ0fQ.NLjdWWR4ZXAivy8_ukpgXfrp7-7A3AIhFr7DZhAg0Fw'
+  expiration: 1000
