@@ -34,10 +34,9 @@ class UserServiceImpl(
 
     @Transactional
     override fun update(login: String, updateDto: UpdateDto): SecUser {
-        var foundUser = userRepository.findByLogin(login) ?: throw UserException(USER_DOES_NOT_EXIST)
+        val foundUser = userRepository.findByLogin(login) ?: throw UserException(USER_DOES_NOT_EXIST)
         val (firstname, lastname, email) = updateDto
-        foundUser = foundUser.copy(firstname = firstname, lastname = lastname, email = email)
-        return userRepository.save(foundUser)
+        return userRepository.save(foundUser.modify(firstname = firstname, lastname = lastname, email = email))
     }
 
     private fun throwIfUserFound(login: String, email: String) {

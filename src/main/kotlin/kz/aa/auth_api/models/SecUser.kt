@@ -3,6 +3,7 @@ package kz.aa.auth_api.models
 import com.fasterxml.jackson.annotation.JsonIgnore
 import lombok.ToString
 import javax.persistence.*
+import javax.validation.constraints.Email
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
@@ -29,6 +30,7 @@ data class SecUser(
     @Column(name = "lastname", length = 50)
     var lastname: @NotNull @Size(min = 4, max = 50) String,
 
+    @Email
     @Column(name = "email", length = 50)
     var email: @NotNull @Size(min = 4, max = 50) String,
 
@@ -80,5 +82,18 @@ data class SecUser(
         result = 31 * result + activated.hashCode()
         result = 31 * result + roles.hashCode()
         return result
+    }
+
+    fun modify(firstname: String?, lastname: String?, email: String?): SecUser {
+        if (firstname != null) {
+            this.firstname = firstname
+        }
+        if (lastname != null) {
+            this.lastname = lastname
+        }
+        if (email != null) {
+            this.email = email
+        }
+        return this
     }
 }

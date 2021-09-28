@@ -14,14 +14,19 @@ data class LoginDto(
 
 data class RegistrationDto(
     @JsonProperty(required = true)
+    @NotNull
     var login: String,
     @JsonProperty(required = true)
+    @NotNull
     var password: String,
     @JsonProperty(required = true)
+    @NotNull
     var firstName: String,
     @JsonProperty(required = true)
+    @NotNull
     var lastname: String,
     @JsonProperty(required = true)
+    @NotNull
     var email: String,
 ) : Serializable
 
