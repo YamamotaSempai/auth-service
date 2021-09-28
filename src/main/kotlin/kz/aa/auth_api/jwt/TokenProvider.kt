@@ -22,6 +22,7 @@ class TokenProvider(
     @param:Value("\${jwt.secret}") private val base64Secret: String,
     @param:Value("\${jwt.expiration}") private var tokenValidityInSeconds: Long
 ) : InitializingBean {
+
     private val log = LoggerFactory.getLogger("TokenProvider")
     private val key: Key = Keys.hmacShaKeyFor(base64Secret.toByteArray(StandardCharsets.UTF_8))
 
@@ -41,7 +42,7 @@ class TokenProvider(
             .compact()
     }
 
-    fun getAuthentication(token: String?): Authentication {
+    fun getAuthentication(token: String): Authentication {
         val jwtParser = Jwts.parserBuilder()
             .setSigningKey(key)
             .build()

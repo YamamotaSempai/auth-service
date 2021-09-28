@@ -18,35 +18,31 @@ import javax.servlet.http.HttpServletRequest
  */
 @Service
 class JWTFilter(private val tokenProvider: TokenProvider) : GenericFilterBean() {
-    private val log = LoggerFactory.getLogger("JWTFilter")
 
-    companion object {
-        const val AUTHORIZATION_HEADER = "Authorization"
-    }
+    private val log = LoggerFactory.getLogger("JWTFilter")
 
     @Throws(IOException::class, ServletException::class)
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, filterChain: FilterChain) {
         val httpServletRequest = servletRequest as HttpServletRequest
-        val jwt = resolveToken(httpServletRequest)
-        val requestURI = httpServletRequest.requestURI
-        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+        val jwt = extractToken(httpServletRequest)
+        if (jwt.isNotBlank() && StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             val authentication = tokenProvider.getAuthentication(jwt)
             SecurityContextHolder.getContext().authentication = authentication
-            log.debug(
-                "set Authentication to security context for '{}', uri: {}",
-                authentication.name,
-                requestURI
-            )
+            log.info("Set Authentication to security context for '$authentication.name'")
         } else {
-            log.debug("no valid JWT token found, uri: {}", requestURI)
+            log.info("No valid JWT token found")
         }
         filterChain.doFilter(servletRequest, servletResponse)
     }
 
-    private fun resolveToken(request: HttpServletRequest): String? {
-        val bearerToken = request.getHeader(AUTHORIZATION_HEADER)
-        return if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+    private fun extractToken(request: HttpServletRequest): String {
+        val bearerToken = request.getHeader(Companion.AUTHORIZATION_HEADER)
+        return if (bearerToken != null && StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             bearerToken.substring(7)
-        } else null
+        } else ""
+    }
+
+    companion object {
+        const val AUTHORIZATION_HEADER = "Authorization"
     }
 }
