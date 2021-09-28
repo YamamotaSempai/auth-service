@@ -1,5 +1,6 @@
 package kz.aa.auth_api.configs
 
+import kz.aa.auth_api.exceptions.UserException
 import kz.aa.auth_api.exceptions.UserNotActivatedException
 import kz.aa.auth_api.services.UserFinder
 import org.springframework.security.authentication.AuthenticationProvider
@@ -19,18 +20,13 @@ class CustomAuthenticationProvider(
     override fun authenticate(authentication: Authentication): Authentication? {
         val login = authentication.name
         val password = authentication.credentials.toString()
-        val findUser = userFinder.getByLogin(login)
-        return if (findUser != null && bCryptPasswordEncoder.matches(password, findUser.password)) {
-            // use the credentials
-            // and authenticate against the third-party system
-            UsernamePasswordAuthenticationToken(
-                login,
-                password,
-                setOf()
-            )
-        } else {
-            throw UserNotActivatedException(userNotActivatedException)
-        }
+        val findUser = userFinder.getByLogin(login) ?: throw UserException(USER_DOES_NOT_EXIST)
+        if (!bCryptPasswordEncoder.matches(password, findUser.password)) throw UserNotActivatedException(PASSWORD_WRONG)
+        return UsernamePasswordAuthenticationToken(
+            login,
+            password,
+            setOf()
+        )
     }
 
     override fun supports(authentication: Class<*>): Boolean {
@@ -38,7 +34,8 @@ class CustomAuthenticationProvider(
     }
 
     companion object {
-        const val userNotActivatedException: String = "User is not activated!"
+        const val USER_DOES_NOT_EXIST = "User does not exist!"
+        const val PASSWORD_WRONG: String = "Password is wrong!"
     }
 
 }

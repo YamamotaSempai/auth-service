@@ -28,10 +28,7 @@ class WebSecurityConfig(
         web.ignoring() // allow anonymous resource requests
             .antMatchers(
                 "/auth/**",
-                "/v2/api-docs",
-                "/configuration/ui",
                 "/swagger-resources/**",
-                "/configuration/security",
                 "/swagger-ui.html",
                 "/swagger-ui/**",
                 "/api/swagger-ui/",
@@ -53,7 +50,7 @@ class WebSecurityConfig(
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/auth/login", "/auth/registration").permitAll()
+            .antMatchers("/auth/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .apply(securityConfigurerAdapter())

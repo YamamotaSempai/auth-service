@@ -36,7 +36,7 @@ class JWTFilter(private val tokenProvider: TokenProvider) : GenericFilterBean() 
     }
 
     private fun extractToken(request: HttpServletRequest): String {
-        val bearerToken = request.getHeader(Companion.AUTHORIZATION_HEADER)
+        val bearerToken = request.getHeader(AUTHORIZATION_HEADER)
         return if (bearerToken != null && StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             bearerToken.substring(7)
         } else ""
