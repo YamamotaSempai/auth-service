@@ -46,10 +46,6 @@ class UserServiceImpl(
         }
     }
 
-    override fun getByLogin(login: String): SecUser? {
-        return userRepository.findByLogin(login)
-    }
-
     private companion object {
         const val USER_ALREADY_EXISTS = "User already exists!"
         const val USER_DOES_NOT_EXIST = "User does not exist!"

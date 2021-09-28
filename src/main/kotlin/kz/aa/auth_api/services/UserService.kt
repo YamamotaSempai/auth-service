@@ -10,5 +10,4 @@ import javax.validation.Valid
 interface UserService {
     fun create(registrationDto: RegistrationDto): SecUser
     fun update(login: String, updateDto: @Valid UpdateDto): SecUser
-    fun getByLogin(login: String): SecUser?
 }

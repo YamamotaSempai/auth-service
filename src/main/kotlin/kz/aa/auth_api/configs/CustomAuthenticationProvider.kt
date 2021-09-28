@@ -1,7 +1,7 @@
 package kz.aa.auth_api.configs
 
 import kz.aa.auth_api.exceptions.UserNotActivatedException
-import kz.aa.auth_api.services.UserService
+import kz.aa.auth_api.services.UserFinder
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class CustomAuthenticationProvider(
-    private val userService: UserService,
+    private val userFinder: UserFinder,
     private val bCryptPasswordEncoder: PasswordEncoder
 ) : AuthenticationProvider {
 
@@ -19,7 +19,7 @@ class CustomAuthenticationProvider(
     override fun authenticate(authentication: Authentication): Authentication? {
         val login = authentication.name
         val password = authentication.credentials.toString()
-        val findUser = userService.getByLogin(login)
+        val findUser = userFinder.getByLogin(login)
         return if (findUser != null && bCryptPasswordEncoder.matches(password, findUser.password)) {
             // use the credentials
             // and authenticate against the third-party system
