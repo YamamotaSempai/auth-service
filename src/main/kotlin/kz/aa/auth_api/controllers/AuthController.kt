@@ -6,6 +6,7 @@ import kz.aa.auth_api.jwt.TokenProvider
 import kz.aa.auth_api.models.SecUser
 import kz.aa.auth_api.models.dto.LoginDto
 import kz.aa.auth_api.models.dto.RegistrationDto
+import kz.aa.auth_api.models.dto.UpdateDto
 import kz.aa.auth_api.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
@@ -14,15 +15,12 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.security.Principal
 import javax.validation.Valid
 
 @RestController
-@RequestMapping(value = ["/auth"])
+@RequestMapping("/auth")
 class AuthController @Autowired constructor(
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val tokenProvider: TokenProvider,
@@ -42,8 +40,15 @@ class AuthController @Autowired constructor(
 
     @PostMapping("/registration")
     fun registration(@RequestBody registrationDto: @Valid RegistrationDto): ResponseEntity<SecUser> {
-        val secUser = userService.create(registrationDto)
-        return ResponseEntity.ok(secUser)
+        return ResponseEntity.ok(userService.create(registrationDto))
+    }
+
+    @PutMapping("/")
+    fun update(
+        @RequestBody updateDto: @Valid UpdateDto,
+        principal: Principal
+    ): ResponseEntity<SecUser> {
+        return ResponseEntity.ok(userService.update(principal.name, updateDto))
     }
 
     class JWTToken(@get:JsonProperty("id_token") val idToken: String)

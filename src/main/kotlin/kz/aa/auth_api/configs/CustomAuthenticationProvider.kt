@@ -15,8 +15,6 @@ class CustomAuthenticationProvider(
     private val bCryptPasswordEncoder: PasswordEncoder
 ) : AuthenticationProvider {
 
-    private val userNotActivatedException: String = "User is not activated!"
-
     @Throws(AuthenticationException::class)
     override fun authenticate(authentication: Authentication): Authentication? {
         val login = authentication.name
@@ -38,4 +36,9 @@ class CustomAuthenticationProvider(
     override fun supports(authentication: Class<*>): Boolean {
         return authentication == UsernamePasswordAuthenticationToken::class.java
     }
+
+    companion object {
+        const val userNotActivatedException: String = "User is not activated!"
+    }
+
 }
